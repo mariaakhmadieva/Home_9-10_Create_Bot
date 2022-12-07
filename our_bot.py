@@ -1,12 +1,14 @@
 from telebot import TeleBot,types
 from dotenv import load_dotenv
 import os
+import logging
 
-# logging.basicConfig(
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#     level=logging.INFO,
-#     filename='log_book'
-# )
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO,
+    filename='log_book'
+)
+
 load_dotenv()
 secret_token = os.getenv('TOKEN')
 bot = TeleBot(secret_token)
@@ -49,7 +51,7 @@ keyboard.row(   types.InlineKeyboardButton('c', callback_data='c'),
 def get_message(message):
     global value
     if value == '':
-        bot.send_message(message.from_user.id, '0', reply_markup=keyboard)
+        bot.send_message(message.from_user.id, 'можно начинать', reply_markup=keyboard)
     else:
         bot.send_message(message.from_user.id, value, reply_markup=keyboard)
 
@@ -58,9 +60,8 @@ def main(query):
     global value, old_value 
     data = query.data
 
-    if data == 'no':
-        pass
-    elif data == 'c':
+
+    if data == 'c':
         value = ''
     elif data == '<=':
         if value != '':
@@ -75,10 +76,14 @@ def main(query):
 
     if (value != old_value and value != '') or ('0' != old_value and value == ''):
         if value == '':
-            bot.edit_message_text(chat_id=query.message.chat.id, message_id=query.message.message_id, text='0', reply_markup=keyboard)
+            bot.edit_message_text(chat_id=query.message.chat.id, 
+            message_id=query.message.message_id, 
+            text='0', reply_markup=keyboard)
             old_value = '0'
         else:
-            bot.edit_message_text(chat_id=query.message.chat.id, message_id=query.message.message_id, text=value, reply_markup=keyboard)
+            bot.edit_message_text(chat_id=query.message.chat.id, 
+            message_id=query.message.message_id, 
+            text=value, reply_markup=keyboard)
             old_value = value
     
     
